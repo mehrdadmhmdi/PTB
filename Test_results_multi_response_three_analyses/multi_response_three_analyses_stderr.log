@@ -1,0 +1,23 @@
+Project root: C:/Users/moham/OneDrive - Alma Mater Studiorum Università di Bologna/UIUC/0_Research/Medical/PTB_2026
+Rows: 1082; subjects: 521
+Bootstrap replicates: 100
+Analysis 1: observed multi-response GA spline fits
+Analysis 1: subject-level bootstrap
+  GA bootstrap 50/100
+  GA bootstrap 100/100
+Analysis 2: multi-response forward-time common phase shift
+  phase tau=0.2 bootstrap 50/100
+  phase tau=0.2 bootstrap 100/100
+  phase tau=0.5 bootstrap 50/100
+  phase tau=0.5 bootstrap 100/100
+  phase tau=0.8 bootstrap 50/100
+  phase tau=0.8 bootstrap 100/100
+Analysis 3: multi-response FTB-only phase variance
+  FTB moment tau=0.2 bootstrap 50/100
+  FTB moment tau=0.2 bootstrap 100/100
+  FTB moment tau=0.5 bootstrap 50/100
+  FTB moment tau=0.5 bootstrap 100/100
+  FTB moment tau=0.8 bootstrap 50/100
+  FTB moment tau=0.8 bootstrap 100/100
+Wrote C:/Users/moham/OneDrive - Alma Mater Studiorum Università di Bologna/UIUC/0_Research/Medical/PTB_2026/tex/multi_response_three_analyses_results.tex
+Wrote outputs to C:/Users/moham/OneDrive - Alma Mater Studiorum Università di Bologna/UIUC/0_Research/Medical/PTB_2026/Test_results_multi_response_three_analyses

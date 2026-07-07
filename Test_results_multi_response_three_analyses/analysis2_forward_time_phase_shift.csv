@@ -1,0 +1,4 @@
+tau,phi_hat_weeks,phi_ci_low,phi_ci_high,phi_hat_days,p_shift_boot,sigma2_phi_hat,sigma2_phi_ci_low,sigma2_phi_ci_high,p_sigma2_le0_boot,B_phi_ok,n_ptb_subjects_for_phi_i,note
+0.2,0,0,0.15000000000000002,0,1,1.417260289461782,0.37781970827679784,2.5392052521483484,0.009900990099009901,100,67,Common shift from FTB reference curves; variance is descriptive subject-specific profile-shift variance.
+0.5,0.050000000000000044,0,0.12624999999999964,0.3500000000000003,0.7326732673267327,3.585255540479421,1.9369268713251921,5.102627487562189,0.009900990099009901,100,67,Common shift from FTB reference curves; variance is descriptive subject-specific profile-shift variance.
+0.8,0,0,0.12624999999999964,0,1,0.8716644052464948,0.39129565241971953,1.4427592152872,0.009900990099009901,100,67,Common shift from FTB reference curves; variance is descriptive subject-specific profile-shift variance.

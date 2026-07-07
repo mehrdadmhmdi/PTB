@@ -1,0 +1,61 @@
+tau,response,term,param_name,estimate,boot_se,z,p_normal
+0.2,SWS,G,SWS__tau0.20__G,-0.10000841053871475,NA,NA,NA
+0.2,SWS,"G:ns(GA, df = 3)1","SWS__tau0.20__G:ns(GA, df = 3)1",0.9041028444029993,NA,NA,NA
+0.2,SWS,"G:ns(GA, df = 3)2","SWS__tau0.20__G:ns(GA, df = 3)2",0.4022103156633665,NA,NA,NA
+0.2,SWS,"G:ns(GA, df = 3)3","SWS__tau0.20__G:ns(GA, df = 3)3",0.09004289608014095,NA,NA,NA
+0.2,Midband,G,Midband__tau0.20__G,-1.9702884950354889,NA,NA,NA
+0.2,Midband,"G:ns(GA, df = 3)1","Midband__tau0.20__G:ns(GA, df = 3)1",-1.4565488504217379,NA,NA,NA
+0.2,Midband,"G:ns(GA, df = 3)2","Midband__tau0.20__G:ns(GA, df = 3)2",4.819698341255741,NA,NA,NA
+0.2,Midband,"G:ns(GA, df = 3)3","Midband__tau0.20__G:ns(GA, df = 3)3",4.542374599646803,NA,NA,NA
+0.2,Intercept,G,Intercept__tau0.20__G,0.9301201289054672,NA,NA,NA
+0.2,Intercept,"G:ns(GA, df = 3)1","Intercept__tau0.20__G:ns(GA, df = 3)1",-1.4822096527366488,NA,NA,NA
+0.2,Intercept,"G:ns(GA, df = 3)2","Intercept__tau0.20__G:ns(GA, df = 3)2",-0.5659898917956873,NA,NA,NA
+0.2,Intercept,"G:ns(GA, df = 3)3","Intercept__tau0.20__G:ns(GA, df = 3)3",3.5347769976604018,NA,NA,NA
+0.2,AC,G,AC__tau0.20__G,-0.051832163222454056,NA,NA,NA
+0.2,AC,"G:ns(GA, df = 3)1","AC__tau0.20__G:ns(GA, df = 3)1",-0.1577713618414402,NA,NA,NA
+0.2,AC,"G:ns(GA, df = 3)2","AC__tau0.20__G:ns(GA, df = 3)2",0.16284481064369474,NA,NA,NA
+0.2,AC,"G:ns(GA, df = 3)3","AC__tau0.20__G:ns(GA, df = 3)3",0.34308323629512527,NA,NA,NA
+0.2,Slope,G,Slope__tau0.20__G,-0.3574485759221016,NA,NA,NA
+0.2,Slope,"G:ns(GA, df = 3)1","Slope__tau0.20__G:ns(GA, df = 3)1",0.46653700533094977,NA,NA,NA
+0.2,Slope,"G:ns(GA, df = 3)2","Slope__tau0.20__G:ns(GA, df = 3)2",0.2981176852397495,NA,NA,NA
+0.2,Slope,"G:ns(GA, df = 3)3","Slope__tau0.20__G:ns(GA, df = 3)3",-0.6699768758364165,NA,NA,NA
+0.5,SWS,G,SWS__tau0.50__G,-0.4838421932515382,NA,NA,NA
+0.5,SWS,"G:ns(GA, df = 3)1","SWS__tau0.50__G:ns(GA, df = 3)1",1.1797180922931665,NA,NA,NA
+0.5,SWS,"G:ns(GA, df = 3)2","SWS__tau0.50__G:ns(GA, df = 3)2",1.2217134766862443,NA,NA,NA
+0.5,SWS,"G:ns(GA, df = 3)3","SWS__tau0.50__G:ns(GA, df = 3)3",0.17954223850090115,NA,NA,NA
+0.5,Midband,G,Midband__tau0.50__G,0.09952560867454452,NA,NA,NA
+0.5,Midband,"G:ns(GA, df = 3)1","Midband__tau0.50__G:ns(GA, df = 3)1",-0.707007321546499,NA,NA,NA
+0.5,Midband,"G:ns(GA, df = 3)2","Midband__tau0.50__G:ns(GA, df = 3)2",0.3836284596473918,NA,NA,NA
+0.5,Midband,"G:ns(GA, df = 3)3","Midband__tau0.50__G:ns(GA, df = 3)3",2.093873974296573,NA,NA,NA
+0.5,Intercept,G,Intercept__tau0.50__G,0.3194145885618502,NA,NA,NA
+0.5,Intercept,"G:ns(GA, df = 3)1","Intercept__tau0.50__G:ns(GA, df = 3)1",-0.6556697647970415,NA,NA,NA
+0.5,Intercept,"G:ns(GA, df = 3)2","Intercept__tau0.50__G:ns(GA, df = 3)2",1.3018462340808472,NA,NA,NA
+0.5,Intercept,"G:ns(GA, df = 3)3","Intercept__tau0.50__G:ns(GA, df = 3)3",3.4879597677502576,NA,NA,NA
+0.5,AC,G,AC__tau0.50__G,-0.03208242105742018,NA,NA,NA
+0.5,AC,"G:ns(GA, df = 3)1","AC__tau0.50__G:ns(GA, df = 3)1",-0.14826682753712175,NA,NA,NA
+0.5,AC,"G:ns(GA, df = 3)2","AC__tau0.50__G:ns(GA, df = 3)2",0.08155984133505269,NA,NA,NA
+0.5,AC,"G:ns(GA, df = 3)3","AC__tau0.50__G:ns(GA, df = 3)3",0.20816455515816212,NA,NA,NA
+0.5,Slope,G,Slope__tau0.50__G,-0.2551050690706134,NA,NA,NA
+0.5,Slope,"G:ns(GA, df = 3)1","Slope__tau0.50__G:ns(GA, df = 3)1",-0.6823853529457705,NA,NA,NA
+0.5,Slope,"G:ns(GA, df = 3)2","Slope__tau0.50__G:ns(GA, df = 3)2",0.08340890360001446,NA,NA,NA
+0.5,Slope,"G:ns(GA, df = 3)3","Slope__tau0.50__G:ns(GA, df = 3)3",0.0330196377728743,NA,NA,NA
+0.8,SWS,G,SWS__tau0.80__G,-0.8862851305475813,NA,NA,NA
+0.8,SWS,"G:ns(GA, df = 3)1","SWS__tau0.80__G:ns(GA, df = 3)1",0.7836852380561,NA,NA,NA
+0.8,SWS,"G:ns(GA, df = 3)2","SWS__tau0.80__G:ns(GA, df = 3)2",1.943365599078093,NA,NA,NA
+0.8,SWS,"G:ns(GA, df = 3)3","SWS__tau0.80__G:ns(GA, df = 3)3",0.22632569509821826,NA,NA,NA
+0.8,Midband,G,Midband__tau0.80__G,0.475163821989985,NA,NA,NA
+0.8,Midband,"G:ns(GA, df = 3)1","Midband__tau0.80__G:ns(GA, df = 3)1",-1.1753625640510146,NA,NA,NA
+0.8,Midband,"G:ns(GA, df = 3)2","Midband__tau0.80__G:ns(GA, df = 3)2",-0.5574133506938777,NA,NA,NA
+0.8,Midband,"G:ns(GA, df = 3)3","Midband__tau0.80__G:ns(GA, df = 3)3",-0.3371142560258925,NA,NA,NA
+0.8,Intercept,G,Intercept__tau0.80__G,-0.02671128880196849,NA,NA,NA
+0.8,Intercept,"G:ns(GA, df = 3)1","Intercept__tau0.80__G:ns(GA, df = 3)1",2.271608620049018,NA,NA,NA
+0.8,Intercept,"G:ns(GA, df = 3)2","Intercept__tau0.80__G:ns(GA, df = 3)2",2.6961950539615307,NA,NA,NA
+0.8,Intercept,"G:ns(GA, df = 3)3","Intercept__tau0.80__G:ns(GA, df = 3)3",2.1973997892180055,NA,NA,NA
+0.8,AC,G,AC__tau0.80__G,-0.0011560307207880342,NA,NA,NA
+0.8,AC,"G:ns(GA, df = 3)1","AC__tau0.80__G:ns(GA, df = 3)1",0.16456766667313844,NA,NA,NA
+0.8,AC,"G:ns(GA, df = 3)2","AC__tau0.80__G:ns(GA, df = 3)2",0.08405964220239316,NA,NA,NA
+0.8,AC,"G:ns(GA, df = 3)3","AC__tau0.80__G:ns(GA, df = 3)3",-0.06658708147740874,NA,NA,NA
+0.8,Slope,G,Slope__tau0.80__G,0.0024320163181337368,NA,NA,NA
+0.8,Slope,"G:ns(GA, df = 3)1","Slope__tau0.80__G:ns(GA, df = 3)1",-0.19883117463263258,NA,NA,NA
+0.8,Slope,"G:ns(GA, df = 3)2","Slope__tau0.80__G:ns(GA, df = 3)2",-0.373025767787561,NA,NA,NA
+0.8,Slope,"G:ns(GA, df = 3)3","Slope__tau0.80__G:ns(GA, df = 3)3",-0.5274904422218305,NA,NA,NA
