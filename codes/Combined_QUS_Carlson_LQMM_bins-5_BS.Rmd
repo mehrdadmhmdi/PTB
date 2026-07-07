@@ -1,0 +1,306 @@
+---
+title: "Combined QUS + Carlson LQMM Analysis with all post-partum data"
+output: pdf_document
+---
+
+**Comment (dgs): I added a QUS data filter for "Outcome==0", we only use full term data for the combined analysis.**
+
+**Comment 2 (dgs): In this version I extended figures out to 100 weeks to include all the post-partum, full-term data**
+
+```{r setup, message = FALSE, warning = FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(splines)
+library(lqmm)
+library(quantreg)   # used only for the rq fallback at the bottom
+```
+
+```{r config}
+# ---------------------------------------------------------------------------
+# Paths -- adjust to wherever the two files live on your machine.
+# ---------------------------------------------------------------------------
+qus_path     <- "../../../data/V1_V7_longformat_k1.csv"
+carlson_path <- "carlson_et_al_data.txt"
+
+# ---------------------------------------------------------------------------
+# Carlson has ~91k measurement-level rows; QUS has ~1k. Set this TRUE to
+# collapse Carlson to one Avg_SWS per exam (ID x GA x Exam) so the two
+# datasets contribute on a comparable scale to the pooled LQMM. Set FALSE to
+# keep every measurement row (your original (P+MP1+MP2+M)/4 per-row approach).
+# ---------------------------------------------------------------------------
+collapse_carlson_per_exam <- TRUE
+
+taus <- c(0.2, 0.5, 0.8)
+```
+
+# 1. QUS data (full data -- no PTB / FTB split)
+
+```{r qus-prep}
+qus_raw <- read_csv(qus_path, show_col_types = FALSE)
+
+qus <- qus_raw %>%
+  filter(mPTB != "1") %>%                       # same clinical filter as before
+#  filter(!Visit_ID %in% c(5, 6, 7)) %>%         # drop late visits as before
+  filter(Outcome == "0") %>%              ##### full term only (-dgs)
+  mutate(GA = GA * 39) %>%                       # convert GA to weeks
+  transmute(
+    Participant_ID = paste0("QUS_", Participant_ID),  # prefix to avoid ID collision
+    GA             = GA,
+    Avg_SWS        = SWS,                              # rename SWS -> Avg_SWS
+    source         = "QUS"
+  ) %>%
+  filter(is.finite(GA), is.finite(Avg_SWS), !is.na(Participant_ID))
+
+nrow(qus)
+range(qus$GA)
+```
+
+# 2. Carlson data (average across P, MP1, MP2, M)
+
+```{r carlson-prep}
+carlson_raw <- read.table(carlson_path, header = TRUE, sep = "\t")
+
+carlson <- carlson_raw %>%
+  mutate(Avg_SWS = (P + MP1 + MP2 + M) / 4)     # average the 4 positions per row
+
+# Optionally collapse to one value per exam so Carlson doesn't dominate the pool
+if (collapse_carlson_per_exam) {
+  carlson <- carlson %>%
+    group_by(ID, Exam, GA) %>%
+    summarise(Avg_SWS = mean(Avg_SWS, na.rm = TRUE), .groups = "drop")
+}
+
+carlson <- carlson %>%
+  transmute(
+    Participant_ID = paste0("CARL_", ID),         # prefix to avoid ID collision
+    GA             = GA,                           # Carlson GA already in weeks
+    Avg_SWS        = Avg_SWS,
+    source         = "Carlson"
+  ) %>%
+  filter(is.finite(GA), is.finite(Avg_SWS), !is.na(Participant_ID))
+
+nrow(carlson)
+range(carlson$GA)
+```
+
+# 3. Combine on GA and Avg_SWS
+
+```{r combine}
+combined <- bind_rows(qus, carlson) %>%
+  mutate(Participant_ID = as.factor(Participant_ID)) %>%
+  arrange(Participant_ID, GA)
+
+table(combined$source)
+range(combined$GA)
+range(combined$Avg_SWS)
+```
+
+# 4. Spline basis, 4-week bins, and prediction grid
+
+```{r basis-bins-grid}
+# ---- spline basis on the pooled GA -- KEEP it so prediction uses identical knots
+ga_ns    <- ns(combined$GA, knots = c(16, 20, 24, 31, 36, 40, 44, 48, 64))
+basis_df <- as.data.frame(ga_ns)
+names(basis_df) <- paste0("ns", seq_len(ncol(basis_df)))
+combined <- bind_cols(combined, basis_df)
+
+# ---- 4-week bins FIRST, so GA_mid exists before we build the grid ----
+brks     <- seq(6, 96, by = 5)
+mids     <- head(brks, -1) + 2
+bin_labs <- paste0("[", head(brks, -1), ",", tail(brks, -1), ")")
+bin_labs[length(bin_labs)] <- sub(")$", "]", bin_labs[length(bin_labs)])
+
+combined <- combined %>%
+  mutate(
+    GA_bin = cut(GA, breaks = brks, right = FALSE, include.lowest = TRUE),
+    GA_mid = brks[as.integer(GA_bin)] + 2
+  ) %>%
+  filter(!is.na(GA_mid))
+
+# ---- grid extended to the last occupied box midpoint ----
+grid_ga <- seq(min(combined$GA), max(combined$GA_mid), length.out = 300)
+grid_X  <- cbind(Intercept = 1, predict(ga_ns, grid_ga))
+
+table(combined$GA_bin)
+```
+
+# 5. Combined LQMM -- Avg_SWS (linear scale)
+
+```{r lqmm-linear}
+fixed_form <- as.formula(paste("Avg_SWS ~", paste(names(basis_df), collapse = " + ")))
+
+preds <- bind_rows(lapply(taus, function(t) {
+  fit  <- lqmm(
+    fixed   = fixed_form,
+    random  = ~ 1,
+    group   = Participant_ID,
+    tau     = t,
+    data    = combined,
+    control = lqmmControl(LP_max_iter = 1000)
+  )
+  beta <- as.numeric(coef(fit))
+  data.frame(GA = grid_ga, fit = as.numeric(grid_X %*% beta),
+             tau = factor(paste0("tau= ", t)))
+}))
+```
+
+```{r plot-linear, fig.width = 9, fig.height = 6}
+y_top <- quantile(combined$Avg_SWS, 0.995, na.rm = TRUE) * 1.05   # robust upper limit
+
+combined_plot <- ggplot(combined, aes(x = GA_mid, y = Avg_SWS, group = GA_mid)) +
+  geom_boxplot(outlier.alpha = 0.1, fill = "grey85", width = 3) +
+  geom_line(
+    data = preds,
+    aes(x = GA, y = fit, color = tau, group = tau),
+    inherit.aes = FALSE,
+    linewidth = 1.3
+  ) +
+  scale_color_manual(values = c(
+    "tau= 0.2" = "#F8766D",
+    "tau= 0.5" = "#00BA38",
+    "tau= 0.8" = "#619CFF"
+  )) +
+  scale_x_continuous(breaks = mids, labels = bin_labs) +
+  labs(
+    title    = "Avg_SWS vs GA (Combined QUS + Carlson)",
+    subtitle = "Grey: 4-week Boxplots | Colored Lines: LQMM Population Quantiles",
+    x        = "Gestational Age (weeks)",
+    y        = "Avg_SWS",
+    color    = "Population Quantiles"
+  ) +
+  coord_cartesian(xlim = c(5,100), ylim = c(0, y_top)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+combined_plot
+```
+
+# 6. Combined LQMM -- log(Avg_SWS)
+
+```{r lqmm-log}
+combined_log <- combined %>%
+  filter(Avg_SWS > 0) %>%
+  mutate(log_SWS = log(Avg_SWS))
+
+# grid can change slightly if the Avg_SWS > 0 filter dropped the last bin
+grid_ga_log <- seq(min(combined_log$GA), max(combined_log$GA_mid), length.out = 300)
+grid_X_log  <- cbind(Intercept = 1, predict(ga_ns, grid_ga_log))
+
+log_form <- as.formula(paste("log_SWS ~", paste(names(basis_df), collapse = " + ")))
+
+preds_log <- bind_rows(lapply(taus, function(t) {
+  fit  <- lqmm(
+    fixed   = log_form,
+    random  = ~ 1,
+    group   = Participant_ID,
+    tau     = t,
+    data    = combined_log,
+    control = lqmmControl(LP_max_iter = 1000)
+  )
+  beta <- as.numeric(coef(fit))
+  data.frame(GA = grid_ga_log, fit = as.numeric(grid_X_log %*% beta),
+             tau = factor(paste0("tau= ", t)))
+}))
+```
+
+```{r plot-log, fig.width = 9, fig.height = 6}
+y_lo <- min(combined_log$log_SWS, na.rm = TRUE)
+y_hi <- quantile(combined_log$log_SWS, 0.995, na.rm = TRUE)
+
+combined_plot_log <- ggplot(combined_log, aes(x = GA_mid, y = log_SWS, group = GA_mid)) +
+  geom_boxplot(outlier.alpha = 0.1, fill = "grey85", width = 3) +
+  geom_line(
+    data = preds_log,
+    aes(x = GA, y = fit, color = tau, group = tau),
+    inherit.aes = FALSE,
+    linewidth = 1.3
+  ) +
+  scale_color_manual(values = c(
+    "tau= 0.2" = "#F8766D",
+    "tau= 0.5" = "#00BA38",
+    "tau= 0.8" = "#619CFF"
+  )) +
+  scale_x_continuous(breaks = mids, labels = bin_labs) +
+  labs(
+    title    = "log(Avg_SWS) vs GA (Combined QUS + Carlson)",
+    subtitle = "Grey: 4-week Boxplots | Colored Lines: LQMM Population Quantiles",
+    x        = "Gestational Age (weeks)",
+    y        = "log(Avg_SWS)",
+    color    = "Population Quantiles"
+  ) +
+  coord_cartesian(xlim = c(5, 100), ylim = c(y_lo, y_hi)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+combined_plot_log
+```
+
+# 7. Optional: see how each dataset contributes
+
+```{r}
+# Same combined LQMM curves, but boxplots split by source so you can see which
+# bins are QUS, which are Carlson, and where they overlap.
+ggplot(combined, aes(x = GA_mid, y = Avg_SWS, group = interaction(GA_mid, source),
+                     fill = source)) +
+  geom_boxplot(outlier.alpha = 0.1, width = 3, position = position_dodge(width = 2)) +
+  geom_line(
+    data = preds,
+    aes(x = GA, y = fit, color = tau, group = tau),
+    inherit.aes = FALSE,
+    linewidth = 1.3
+  ) +
+  scale_fill_manual(values = c("QUS" = "lightblue", "Carlson" = "orange")) +
+  scale_color_manual(values = c(
+    "tau= 0.2" = "#F8766D",
+    "tau= 0.5" = "#00BA38",
+    "tau= 0.8" = "#619CFF"
+  )) +
+  scale_x_continuous(breaks = mids, labels = bin_labs) +
+  labs(
+    title    = "Avg_SWS vs GA by source (Combined LQMM curves overlaid)",
+    x        = "Gestational Age (weeks)",
+    y        = "Avg_SWS",
+    fill     = "Source",
+    color    = "Population Quantiles"
+  ) +
+  coord_cartesian(xlim = c(6, 96), ylim = c(0, y_top)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+# Same combined log-scale LQMM curves, but boxplots split by source so you can
+# see which bins are QUS, which are Carlson, and where they overlap.
+y_lo <- min(combined_log$log_SWS, na.rm = TRUE)
+y_hi <- quantile(combined_log$log_SWS, 0.995, na.rm = TRUE)
+
+ggplot(combined_log, aes(x = GA_mid, y = log_SWS,
+                         group = interaction(GA_mid, source),
+                         fill = source)) +
+  geom_boxplot(outlier.alpha = 0.1, width = 3, position = position_dodge(width = 2)) +
+  geom_line(
+    data = preds_log,
+    aes(x = GA, y = fit, color = tau, group = tau),
+    inherit.aes = FALSE,
+    linewidth = 1.3
+  ) +
+  scale_fill_manual(values = c("QUS" = "lightblue", "Carlson" = "orange")) +
+  scale_color_manual(values = c(
+    "tau= 0.2" = "#F8766D",
+    "tau= 0.5" = "#00BA38",
+    "tau= 0.8" = "#619CFF"
+  )) +
+  scale_x_continuous(breaks = mids, labels = bin_labs) +
+  labs(
+    title    = "log(Avg_SWS) vs GA by source (Combined LQMM curves overlaid)",
+    x        = "Gestational Age (weeks)",
+    y        = "log(Avg_SWS)",
+    fill     = "Source",
+    color    = "Population Quantiles"
+  ) +
+  coord_cartesian(xlim = c(8, 100), ylim = c(y_lo, y_hi)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```

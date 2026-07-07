@@ -1,0 +1,11 @@
+Metric,Value
+Input file,C:\Users\moham\OneDrive - Alma Mater Studiorum Università di Bologna\UIUC\0_Research\Medical\PTB_2026\git\data\V1_V7_longformat_k1.csv
+Raw observations,1082
+Analyzed observations after excluding medically indicated PTB,1043
+Raw participants,521
+Analyzed participants,500
+Term participants,453
+Spontaneous preterm participants,47
+Medically indicated PTB participants excluded,21
+Median visits per analyzed participant,2
+Maximum visits per analyzed participant,7
