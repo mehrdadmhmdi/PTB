@@ -1,0 +1,23 @@
+field,value
+analysis_name,Combined_QUS_Carlson_LQMM_bins-5_BS
+run_time,2026-07-07 17:57:25 CDT
+k,8
+project_root,C:\Users\moham\OneDrive - Alma Mater Studiorum Università di Bologna\UIUC\0_Research\Medical\PTB_2026\git
+qus_path,C:\Users\moham\OneDrive - Alma Mater Studiorum Università di Bologna\UIUC\0_Research\Medical\PTB_2026\git\data\V1_V7_longformat_k8.csv
+carlson_path,C:\Users\moham\OneDrive - Alma Mater Studiorum Università di Bologna\UIUC\0_Research\Medical\PTB_2026\git\data\carlson_et_al_data.txt
+output_dir,C:\Users\moham\OneDrive - Alma Mater Studiorum Università di Bologna\UIUC\0_Research\Medical\PTB_2026\git\results\Combined_QUS_Carlson_LQMM_bins-5_BS
+collapse_carlson_per_exam,TRUE
+tau_values,"0.2, 0.5, 0.8"
+spline_knots,"16, 20, 24, 31, 36, 40, 44, 48, 64"
+bin_width,5
+bin_position_offset,2
+illini_orange,#FF5F05
+illini_blue,#13294B
+carlson_data_color,#707372
+qus_data_color,#FCB316
+source_alpha,0.72
+quantile_tau_0_2_color,#006230
+quantile_tau_0_5_color,#FF5F05
+quantile_tau_0_8_color,#13294B
+box_median_color,#FFFFFF
+plot_format,png

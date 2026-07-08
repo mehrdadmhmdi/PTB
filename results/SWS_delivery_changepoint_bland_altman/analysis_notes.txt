@@ -1,0 +1,26 @@
+SWS delivery-normalized analyses
+
+Created: 2026-07-07 17:50:32 CDT
+Project root: C:/Users/moham/OneDrive - Alma Mater Studiorum Università di Bologna/UIUC/0_Research/Medical/PTB_2026/git
+Input files: V1_V7_longformat_k1.csv, V1_V7_longformat_k2.csv, V1_V7_longformat_k3.csv, V1_V7_longformat_k4.csv, V1_V7_longformat_k5.csv, V1_V7_longformat_k6.csv, V1_V7_longformat_k7.csv, V1_V7_longformat_k8.csv, V1_V7_longformat_k9.csv, V1_V7_longformat_k10.csv
+Output directory: C:/Users/moham/OneDrive - Alma Mater Studiorum Università di Bologna/UIUC/0_Research/Medical/PTB_2026/git/results/SWS_delivery_changepoint_bland_altman
+
+Clock definition:
+  time_to_delivery_weeks = GA_weeks - GA_delivery_weeks
+  negative values are prepartum; positive values are postpartum.
+  A delivery scan is not imputed. The observed delivery gap is reported in tables/delivery_gap_by_k.csv.
+
+Near-delivery minimum:
+  close window = +/-10 weeks from delivery.
+  binned minimum uses 2-week bins and selects the bin with lowest median SWS.
+
+Change point:
+  descriptive piecewise-linear change points are fit within +/-24 weeks from delivery.
+  change_point_in_delivery_gap marks estimates falling between the closest pre- and postpartum observations.
+
+Bland-Altman:
+  reference k = 10.
+  The current preprocessing changes V1/V2 with k. Postpartum V3-V7 values are averaged over all acquisitions,
+  so postpartum cross-k Bland-Altman differences should be zero unless preprocessing is changed.
+
+Plots are PNG only; no PDF plot output is generated.
